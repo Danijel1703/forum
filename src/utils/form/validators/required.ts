@@ -1,0 +1,1 @@
+function required(value: any) {}
