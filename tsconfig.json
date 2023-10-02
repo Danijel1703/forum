@@ -13,7 +13,8 @@
       "routes/*": ["./src/router/routes/*"],
       "constants/*": ["./src/constants/*"],
       "stores/*": ["./src/stores/*"],
-      "styles/*": ["./src/styles/*"]
+      "styles/*": ["./src/styles/*"],
+      "validators/*": ["./src/form/validators/*"]
     },
 
     /* Bundler mode */

@@ -1,66 +1,41 @@
-import { FormField } from "~/types";
-import { fieldValidate } from "~/utils";
+import { fieldTypeConstants } from "~/constants";
+import { TFieldProps } from "~/types";
 
-const UserCreateFields: Array<FormField> = [
+const UserCreateFields: Array<TFieldProps> = [
   {
-    validators: [],
     name: "username",
     label: "Username",
-    type: "text",
-    className: "",
-    value: undefined,
-    validate: fieldValidate,
+    type: fieldTypeConstants.text,
   },
   {
-    validators: [],
     name: "password",
     label: "Password",
-    type: "password",
-    className: "",
-    value: undefined,
-    validate: fieldValidate,
+    type: fieldTypeConstants.password,
   },
   {
-    validators: [],
     name: "confirmedPassword",
     label: "Confirmed Password",
-    type: "password",
-    className: "",
-    value: undefined,
-    validate: fieldValidate,
+    type: fieldTypeConstants.password,
   },
   {
-    validators: [],
     name: "email",
     label: "Email",
-    type: "text",
-    className: "",
-    value: undefined,
-    validate: fieldValidate,
+    type: fieldTypeConstants.text,
   },
   {
-    validators: [],
     name: "confirmedEmail",
     label: "Confirmed Email",
-    type: "text",
-    value: undefined,
-    validate: fieldValidate,
+    type: fieldTypeConstants.text,
   },
   {
-    validators: [],
     name: "firstName",
     label: "First Name",
-    type: "text",
-    value: undefined,
-    validate: fieldValidate,
+    type: fieldTypeConstants.text,
   },
   {
-    validators: [],
     name: "lastName",
     label: "Last Name",
-    type: "text",
-    value: undefined,
-    validate: fieldValidate,
+    type: fieldTypeConstants.text,
   },
 ];
 

@@ -14,7 +14,7 @@ const UserCreatePage = ({ store }: Props) => {
     <div>
       <div className="form-wrapper">
         <Form
-          formProperties={form}
+          formFields={form}
           onSubmit={() => {
             console.log(form);
           }}

@@ -1,37 +1,34 @@
-import { each, find, indexOf, isEmpty, map, random } from "lodash";
-import { FormField } from "~/types";
+import { isEmpty, map } from "lodash";
+import { TFieldProps, TFormField } from "~/types";
 import { PasswordInput, TextInput } from "~/components";
-import { action, makeObservable, observable } from "mobx";
+import { makeObservable, observable } from "mobx";
+import { validateField } from "~/utils";
+import { required } from "~/utils/form/validators";
+import { FunctionComponent } from "react";
 
 type Options = {
   formTemplate: string;
 };
 
-type Form = Array<{
-  component: any;
-  field: FormField;
-}>;
+type Form = Array<TFormField>;
 
 class FormStore<TEntity> {
   defaultOptions: Options = {
     formTemplate: "default",
   };
-  form: Form = [];
+  #form: Form = [];
   entity: TEntity | any;
-  formFields: Array<FormField>;
+  formFields: Array<TFieldProps>;
   options: Options = this.defaultOptions;
   onSubmit: Function;
 
   constructor(
     EntityClass: new () => TEntity,
-    formFields: Array<FormField>,
+    formFields: Array<TFieldProps>,
     onSubmit: Function,
     options?: Options,
     entity?: TEntity
   ) {
-    makeObservable(this, {
-      form: observable,
-    });
     this.formFields = formFields;
     this.options = { ...this.defaultOptions, ...options };
     this.entity = {};
@@ -40,6 +37,10 @@ class FormStore<TEntity> {
     if (entity) {
       this.initializeEntity(EntityClass, entity);
     }
+  }
+
+  get form() {
+    return this.#form;
   }
 
   initializeEntity(EntityClass: new () => TEntity, entity: TEntity) {
@@ -51,7 +52,7 @@ class FormStore<TEntity> {
   }
 
   generateForm() {
-    this.form = map(this.formFields, (formField: FormField) => {
+    this.#form = map(this.formFields, (formField: TFieldProps) => {
       let component;
       switch (formField.type) {
         case "text":
@@ -61,21 +62,26 @@ class FormStore<TEntity> {
           component = PasswordInput;
           break;
       }
-      const field = this.generateFormField(formField);
-      return {
-        field,
-        component: component,
-      };
+      const field: TFormField = this.generateFormField(formField);
+      field.component = component as FunctionComponent;
+      return field;
     });
   }
 
-  generateFormField(formField: FormField) {
+  generateFormField(formField: TFieldProps) {
     const field = {
       ...formField,
-    };
+    } as TFormField;
+    if (isEmpty(field.validators)) {
+      field.validators = [required];
+    }
+    field.validate = () => validateField(field.value, field.validators);
+    field.value = undefined;
+    field.error = undefined;
+    field.isValid = true;
     const self = this;
     const handler = {
-      get(obj: FormField, key: string) {
+      get(obj: TFormField, key: string) {
         type Key = keyof typeof obj;
         switch (key) {
           case "value":
@@ -83,9 +89,9 @@ class FormStore<TEntity> {
               ? self.entity[key]
               : obj[key as Key];
           case "error":
-            return formField.validate().error;
+            return field.validate().error;
           case "isValid":
-            return formField.validate().isValid;
+            return field.validate().isValid;
           default:
             return obj[key as Key];
         }
@@ -95,11 +101,11 @@ class FormStore<TEntity> {
     fieldProxy.onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       fieldProxy.value = e.target.value;
     };
-    return fieldProxy;
-  }
-
-  setEntityValue(key: string, value: string) {
-    this.entity[key] = value;
+    return makeObservable(fieldProxy, {
+      value: observable,
+      error: observable,
+      isValid: observable,
+    });
   }
 }
 

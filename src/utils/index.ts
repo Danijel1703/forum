@@ -1,2 +1,2 @@
 export { default as inject } from "./inject";
-export { default as fieldValidate } from "./form/fieldValidate";
+export { default as validateField } from "./form/validateField";

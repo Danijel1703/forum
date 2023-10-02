@@ -16,6 +16,7 @@ export default defineConfig({
       stores: path.resolve(__dirname, "src/stores/"),
       types: path.resolve(__dirname, "src/types/"),
       styles: path.resolve(__dirname, "src/styles/"),
+      validators: path.resolve(__dirname, "src/utils/form/validators"),
     },
   },
 });
